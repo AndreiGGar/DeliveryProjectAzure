@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DeliveryProject</title>
     <link rel="icon" href="~/assets/images/project/Delivery.ico" />
+
+    @*Link Bootstrap*@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    @*Link CSS*@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DeliveryProject.styles.css" asp-append-version="true" />
 </head>
@@ -50,9 +54,17 @@
             &copy; 2023 - DeliveryProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    @*Script jQuery*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    @*Script Bootstrap*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @*Script JavaScript*@
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @*Render Scripts*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
