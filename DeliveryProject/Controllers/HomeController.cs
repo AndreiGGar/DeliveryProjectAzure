@@ -1,4 +1,5 @@
 ﻿using DeliveryProject.Models;
+using DeliveryProject.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,10 +7,17 @@ namespace DeliveryProject.Controllers
 {
     public class HomeController : Controller
     {
+        private RepositoryDelivery repo;
+       
+        public HomeController (RepositoryDelivery repo)
+        {
+            this.repo = repo;
+        }
 
         public IActionResult Index()
         {
-            return View();
+            List<Restaurant> restaurants = this.repo.GetRestaurants();
+            return View(restaurants);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
