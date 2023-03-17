@@ -1,10 +1,12 @@
 using DeliveryProject.Context;
+using DeliveryProject.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string connectionString = builder.Configuration.GetConnectionString("DeliveryDB");
+builder.Services.AddTransient<RepositoryDelivery>();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddControllersWithViews();

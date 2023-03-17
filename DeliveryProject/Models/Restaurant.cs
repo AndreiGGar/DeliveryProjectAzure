@@ -29,14 +29,14 @@ namespace DeliveryProject.Models
         public string? ContactEmail { get; set; }
         [Column("Website")]
         public string? Website { get; set; }
-        [Column("Website")]
+        [Column("MinimumAmount")]
         public decimal MinimumAmount { get; set; }
         [Column("DeliveryFee")]
         public decimal DeliveryFee { get; set; }
-        [Column("DateAdded")]
+        [Column("DeliveryActive")]
         public bool DeliveryActive { get; set; }
-        [Column("DateAdded")]
-        public DateTime DateAdded { get; set; }
+        [Column("DateAdd")]
+        public DateTime DateAdd { get; set; }
         [Column("DateEdit")]
         public DateTime? DateEdit { get; set; }
         [Column("CreatedBy")]

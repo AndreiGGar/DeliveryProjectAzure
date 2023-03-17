@@ -17,7 +17,8 @@ namespace DeliveryProject.Controllers
         public IActionResult Index()
         {
             List<Restaurant> restaurants = this.repo.GetRestaurants();
-            return View(restaurants);
+            ViewData["RESTAURANTS"] = restaurants;
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
