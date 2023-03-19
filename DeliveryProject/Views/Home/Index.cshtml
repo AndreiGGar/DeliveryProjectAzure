@@ -1,71 +1,122 @@
 ﻿@{
     ViewData["Title"] = "Delivery";
     List<Restaurant> restaurants = ViewData["RESTAURANTS"] as List<Restaurant>;
+    List<Category> categories = ViewData["CATEGORIES"] as List<Category>;
 }
+
+<div class="owl-carousel owl-theme pe-5 ps-5">
+    @foreach (Category category in categories)
+    {
+        <a asp-controller="Filter" asp-action="Category" asp-route-id="@category.Id">
+            <div class="item">
+                <img class="img img-fluid w-50 m-auto" src="~/assets/images/restaurantscategories/@category.Image" />
+                <h6 class="text-center mt-2">@category.Name</h6>
+            </div>
+        </a>
+    }
+</div>
 
 <div class="row">
     <div class="col-md-3">
-        Filtros
+        <h2>Filtros</h2>
+        <form class="form">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="ordenar" id="relevancia" value="relevancia" checked>
+                <label class="form-check-label" for="relevancia">
+                    Relevancia
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="ordenar" id="novedades" value="novedades">
+                <label class="form-check-label" for="novedades">
+                    Novedades
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="ordenar" id="valoraciones" value="valoraciones">
+                <label class="form-check-label" for="valoraciones">
+                    Valoraciones
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="ordenar" id="tiempoentrega" value="tiempoentrega">
+                <label class="form-check-label" for="tiempoentrega">
+                    Tiempo de entrega
+                </label>
+            </div>
+            <button class="btn btn-primary">
+                Filtrar
+            </button>
+        </form>
     </div>
     <div class="col-md-9">
-        <div class="row">
+        <div class="row" id="restaurants-row">
             @foreach (Restaurant restaurant in restaurants)
             {
-                <div class="col-md-6 col-lg-6 col-xl-4 col-xxl-3 mb-5 h-100">
-                    <div class="card">
-                        <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:250px;" />
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                @restaurant.Name
-                            </h5>
+                <div class="col-sm-6 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5 h-100">
+                    <a asp-controller="Restaurants" asp-action="Index" asp-route-id="@restaurant.Id">
+                        <div class="card border-0 shadow">
+                            <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:220px;" />
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    @restaurant.Name
+                                </h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>
     </div>
 </div>
 
-@*<div class="row">
-       <div class="col-sm-6 col-md-6 col-lg-4">
-       <div class="food-card">
-       <div class="food-card_img">
-       <img src="https://i.imgur.com/eFWRUuR.jpg" alt="">
-       <a href="#!"><i class="far fa-heart"></i></a>
-       </div>
-       <div class="food-card_content">
-       <div class="food-card_title-section">
-       <a href="#!" class="food-card_title">Double Cheese Potato Burger</a>
-       <a href="#!" class="food-card_author">Burger</a>
-       </div>
-       <div class="food-card_bottom-section">
-       <div class="space-between">
-       <div>
-       <span class="fa fa-fire"></span> 220 - 280 Kcal
-       </div>
-       <div class="pull-right">
-       <span class="badge badge-success">Veg</span>
-       </div>
-       </div>
-       <hr>
-       <div class="space-between">
-       <div class="food-card_price">
-       <span>5.99$</span>
-       </div>
-       <div class="food-card_order-count">
-       <div class="input-group mb-3">
-       <div class="input-group-prepend">
-       <button class="btn btn-outline-secondary minus-btn" type="button" id="button-addon1"><i class="fa fa-minus"></i></button>
-       </div>
-       <input type="text" class="form-control input-manulator" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" value="0">
-       <div class="input-group-append">
-       <button class="btn btn-outline-secondary add-btn" type="button" id="button-addon1"><i class="fa fa-plus"></i></button>
-       </div>
-       </div>
-       </div>
-       </div>
-       </div>
-       </div>
-       </div>
-       </div>
-*@
+<style>
+    .owl-carousel {
+        margin-top: 2em;
+        margin-bottom: 2.5em;
+    }
+
+        .owl-carousel a {
+            text-decoration: none;
+            color: black;
+        }
+
+    #restaurants-row a {
+        text-decoration: none;
+        color: black;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                autoplay: true,
+                autoplayTimeout: 2000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    300: {
+                        items: 3
+                    },
+                    400: {
+                        items: 4
+                    },
+                    600: {
+                        items: 6
+                    },
+                    800: {
+                        items: 8
+                    },
+                    1000: {
+                        items: 12
+                    }
+                }
+            })
+        });
+    </script>
+}

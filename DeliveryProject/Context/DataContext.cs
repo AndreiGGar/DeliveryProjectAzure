@@ -7,5 +7,6 @@ namespace DeliveryProject.Context
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

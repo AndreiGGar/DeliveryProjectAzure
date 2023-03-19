@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-string connectionString = builder.Configuration.GetConnectionString("DeliveryDB");
+string connectionString = builder.Configuration.GetConnectionString("DeliveryDBHome");
 builder.Services.AddTransient<RepositoryDelivery>();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 

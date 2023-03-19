@@ -18,6 +18,8 @@ namespace DeliveryProject.Controllers
         {
             List<Restaurant> restaurants = this.repo.GetRestaurants();
             ViewData["RESTAURANTS"] = restaurants;
+            List<Category> categories = this.repo.GetCategories();
+            ViewData["CATEGORIES"] = categories;
             return View();
         }
 

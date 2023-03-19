@@ -21,5 +21,10 @@ namespace DeliveryProject.Repositories
         {
             return this.context.Restaurants.FirstOrDefault(x => x.Id == id);
         }
+
+        public List<Category> GetCategories()
+        {
+            return this.context.Categories.ToList();
+        }
     }
 }

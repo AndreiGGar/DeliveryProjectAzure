@@ -9,6 +9,10 @@
     @*Link Bootstrap*@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
+    @*Link OwlCarousel*@
+    <link rel="stylesheet" href="~/lib/owlcarousel/dist/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/lib/owlcarousel/dist/assets/owl.theme.default.min.css" />
+
     @*Link CSS*@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DeliveryProject.styles.css" asp-append-version="true" />
@@ -63,6 +67,8 @@
 
     @*Script JavaScript*@
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/lib/owlcarousel/dist/owl.carousel.min.js"></script>
 
     @*Render Scripts*@
     @await RenderSectionAsync("Scripts", required: false)
