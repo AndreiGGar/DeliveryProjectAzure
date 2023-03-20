@@ -17,34 +17,51 @@
 </div>
 
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 pe-5">
         <h2>Filtros</h2>
         <form class="form">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ordenar" id="relevancia" value="relevancia" checked>
-                <label class="form-check-label" for="relevancia">
-                    Relevancia
+            <p>
+                <a class="d-flex justify-content-between align-items-center text-black" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    <h4>Ordenar <i class="fa-solid fa-arrow-up arrow-icon"></i></h4>
+                </a>
+            </p>
+            <div class="collapse show" id="collapseExample">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="relevancia" value="relevancia" checked>
+                    <label class="form-check-label" for="relevancia">
+                        Relevancia
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="novedades" value="novedades">
+                    <label class="form-check-label" for="novedades">
+                        Novedades
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="valoraciones" value="valoraciones">
+                    <label class="form-check-label" for="valoraciones">
+                        Valoraciones
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ordenar" id="tiempoentrega" value="tiempoentrega">
+                    <label class="form-check-label" for="tiempoentrega">
+                        Tiempo de entrega
+                    </label>
+                </div>
+            </div>
+            <div class="custom-control custom-switch">
+                <input class="custom-control-input" type="checkbox" name="customswitch" id="customswitch" value="customswitch">
+                <label class="custom-control-label" for="customswitch">
+                    Ofertas
                 </label>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ordenar" id="novedades" value="novedades">
-                <label class="form-check-label" for="novedades">
-                    Novedades
-                </label>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
             </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ordenar" id="valoraciones" value="valoraciones">
-                <label class="form-check-label" for="valoraciones">
-                    Valoraciones
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="ordenar" id="tiempoentrega" value="tiempoentrega">
-                <label class="form-check-label" for="tiempoentrega">
-                    Tiempo de entrega
-                </label>
-            </div>
-            <button class="btn btn-primary">
+            <button class="btn btn-dark">
                 Filtrar
             </button>
         </form>
@@ -85,6 +102,87 @@
         text-decoration: none;
         color: black;
     }
+
+    .custom-control-label {
+        position: relative;
+        margin-bottom: 0;
+        vertical-align: top;
+    }
+
+    .custom-control-input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+
+    .custom-switch {
+        padding-left: 2.25rem;
+    }
+
+    .custom-control {
+        position: relative;
+        display: block;
+        min-height: 1.5rem;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        color: #fff;
+        border-color: #0b55c1;
+        background-color: #0b55c1;
+    }
+
+    .custom-switch .custom-control-label::before {
+        left: -2.25rem;
+        width: 1.75rem;
+        pointer-events: all;
+        border-radius: .5rem;
+    }
+
+    .custom-control-label::before, .custom-file-label, .custom-select {
+        transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    .custom-control-label::before {
+        position: absolute;
+        top: .25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        pointer-events: none;
+        content: "";
+        background-color: #fff;
+        border: #adb5bd solid 1px;
+    }
+
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff;
+        -webkit-transform: translateX(.75rem);
+        transform: translateX(.75rem);
+    }
+
+    .custom-switch .custom-control-label::after {
+        top: calc(.25rem + 2px);
+        left: calc(-2.25rem + 2px);
+        width: calc(1rem - 4px);
+        height: calc(1rem - 4px);
+        background-color: #adb5bd;
+        border-radius: .5rem;
+        transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-transform .15s ease-in-out;
+        transition: transform .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        transition: transform .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-transform .15s ease-in-out;
+    }
+
+    .custom-control-label::after {
+        position: absolute;
+        top: .25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        content: "";
+        background: no-repeat 50%/50% 50%;
+    }
 </style>
 
 @section Scripts {
@@ -117,6 +215,12 @@
                     }
                 }
             })
+
+            $('.collapse').on('shown.bs.collapse', function () {
+                $(this).parent().find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-up").css({ "transition-duration": "0.2s" });
+            }).on('hidden.bs.collapse', function () {
+                $(this).parent().find(".fa-arrow-up").removeClass("fa-arrow-up").addClass("fa-arrow-down").css({ "transition-duration": "0.2s" });
+            });
         });
     </script>
 }
