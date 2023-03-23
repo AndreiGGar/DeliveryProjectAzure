@@ -1,0 +1,36 @@
+﻿@model PaginationRestaurants
+@{
+    int numeroRegistros = 0;
+    int numeropagina = 1;
+    if (Model != null)
+    {
+        numeroRegistros = Model.NumberRecords;
+    }
+}
+
+
+<h1>Imagenes</h1>
+
+@if (Model != null)
+{
+    <nav aria-label="Pagination Employees">
+        <ul class="pagination">
+            @for (int i = 1; i <= numeroRegistros; i += 1)
+            {
+                <li class="page-item">
+                    <button onclick="pagination(@i, @Model.Restaurants[i].Name)">
+                        Página @numeropagina
+                    </button>
+                </li>
+                numeropagina += 1;
+            }
+
+        </ul>
+    </nav>
+
+
+    @foreach (Restaurant restaurant in Model.Restaurants)
+    {
+        <img src="@restaurant.Image" width="300" height="300" />
+    }
+}
