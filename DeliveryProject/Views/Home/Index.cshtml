@@ -66,26 +66,82 @@
             </button>
         </form>
     </div>
-    <div class="col-md-9">
-        <div class="row" id="restaurants-row">
-            @foreach (Restaurant restaurant in restaurants)
-            {
-                <div class="col-sm-6 col-md-6 col-lg-6 col-xl-4 col-xxl-4 mb-5 h-100">
-                    <a asp-controller="Restaurants" asp-action="Index" asp-route-id="@restaurant.Id">
-                        <div class="card border-0 shadow">
-                            <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:220px;" />
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    @restaurant.Name
-                                </h5>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            }
-        </div>
+    <div class="col-md-9" id="pagination-restaurants">
     </div>
 </div>
+
+@*function loadRestaurants(pageNumber, pageSize) {
+            var request = "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+            $("#pagination-restaurants").load(request);
+        }
+        var request = "/Home/_PaginationRestaurants";
+            $("#pagination-restaurants").load(request);*@
+
+@section Scripts {
+    <script>
+        function loadRestaurants(pageNumber, pageSize) {
+            $.ajax({
+                url: "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize,
+                type: "GET",
+                dataType: "html",
+                success: function (data) {
+                    $("#pagination-restaurants").html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/Home/_PaginationRestaurants",
+                type: "GET",
+                dataType: "html",
+                success: function (data) {
+                    $("#pagination-restaurants").html(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                autoplay: true,
+                autoplayTimeout: 2000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 2
+                    },
+                    300: {
+                        items: 3
+                    },
+                    400: {
+                        items: 4
+                    },
+                    600: {
+                        items: 6
+                    },
+                    800: {
+                        items: 8
+                    },
+                    1000: {
+                        items: 12
+                    }
+                }
+            })
+
+            $('.collapse').on('shown.bs.collapse', function () {
+                $(this).parent().find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-up").css({ "transition-duration": "0.2s" });
+            }).on('hidden.bs.collapse', function () {
+                $(this).parent().find(".fa-arrow-up").removeClass("fa-arrow-up").addClass("fa-arrow-down").css({ "transition-duration": "0.2s" });
+            });
+        });
+    </script>
+}
 
 <style>
     .owl-carousel {
@@ -184,43 +240,3 @@
         background: no-repeat 50%/50% 50%;
     }
 </style>
-
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('.owl-carousel').owlCarousel({
-                loop: true,
-                margin: 10,
-                autoplay: true,
-                autoplayTimeout: 2000,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: {
-                        items: 2
-                    },
-                    300: {
-                        items: 3
-                    },
-                    400: {
-                        items: 4
-                    },
-                    600: {
-                        items: 6
-                    },
-                    800: {
-                        items: 8
-                    },
-                    1000: {
-                        items: 12
-                    }
-                }
-            })
-
-            $('.collapse').on('shown.bs.collapse', function () {
-                $(this).parent().find(".fa-arrow-down").removeClass("fa-arrow-down").addClass("fa-arrow-up").css({ "transition-duration": "0.2s" });
-            }).on('hidden.bs.collapse', function () {
-                $(this).parent().find(".fa-arrow-up").removeClass("fa-arrow-up").addClass("fa-arrow-down").css({ "transition-duration": "0.2s" });
-            });
-        });
-    </script>
-}

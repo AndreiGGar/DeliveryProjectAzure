@@ -1,5 +1,6 @@
 ﻿using DeliveryProject.Context;
 using DeliveryProject.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryProject.Repositories
 {
@@ -12,19 +13,19 @@ namespace DeliveryProject.Repositories
             this.context = context;
         }
 
-        public List<Restaurant> GetRestaurants()
+        public async Task<List<Restaurant>> GetRestaurants()
         {
-            return this.context.Restaurants.ToList();
+            return await this.context.Restaurants.ToListAsync();
         }
 
-        public Restaurant FindRestaurant(int id)
+        public async Task<Restaurant> FindRestaurant(int id)
         {
-            return this.context.Restaurants.FirstOrDefault(x => x.Id == id);
+            return await this.context.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public List<Category> GetCategories()
+        public async Task<List<Category>> GetCategories()
         {
-            return this.context.Categories.ToList();
+            return await this.context.Categories.ToListAsync();
         }
     }
 }
