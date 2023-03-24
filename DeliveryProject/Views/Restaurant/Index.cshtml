@@ -1,1 +1,35 @@
-﻿
+﻿@model List<ProductListViewModel>
+
+@{
+    List<CategoryProduct> categoriesByRestaurant = ViewData["CATEGORIES"] as List<CategoryProduct>;
+}
+
+<div class="row">
+    <div class="col-md-3 text-right">
+        @foreach (var cat in categoriesByRestaurant)
+        {
+            <div class="row">
+                <a href="#@cat.Name">@cat.Name</a>
+            </div>
+        }
+    </div>
+    <div class="col-md-9">
+
+        @foreach (var cat in categoriesByRestaurant)
+        {
+            <div class="row" id="@cat.Name">
+                <h4>@cat.Name</h4>
+            </div>
+            @foreach (var model in Model)
+            {
+                @foreach (var prod in model.Products)
+                {
+                    <div class="row">
+                        @prod.Name
+                    </div>
+                }
+            }
+        }
+
+    </div>
+</div>

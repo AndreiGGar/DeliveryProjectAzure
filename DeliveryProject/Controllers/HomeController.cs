@@ -16,19 +16,20 @@ namespace DeliveryProject.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<Restaurant> restaurants = await this.repo.GetRestaurants();
+            List<Restaurant> restaurants = await this.repo.GetRestaurantsAsync();
             ViewData["RESTAURANTS"] = restaurants;
-            List<Category> categories = await this.repo.GetCategories();
+            List<Category> categories = await this.repo.GetCategoriesAsync();
             ViewData["CATEGORIES"] = categories;
             return View();
         }
 
-        public async Task<IActionResult> _PaginationRestaurants(int? pageNumber, int? pageSize)
+        public async Task<IActionResult> _PaginationRestaurants(int? pageNumber, int? pageSize, int? category)
         {
             pageNumber = pageNumber ?? 1;
             pageSize = pageSize ?? 3;
+            category = category ?? 0;
 
-            var restaurants = await this.repo.GetRestaurants();
+            var restaurants = await this.repo.GetRestaurantsByCategoryAsync(category.Value);
 
             var RestaurantListViewModel = new RestaurantListViewModel
             {
@@ -39,6 +40,7 @@ namespace DeliveryProject.Controllers
                     ItemsPerPage = pageSize.Value,
                     TotalItems = restaurants.Count()
                 },
+                SelectedCategory = category.Value
             };
             return PartialView("_PaginationRestaurants", RestaurantListViewModel);
         }

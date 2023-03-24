@@ -35,6 +35,10 @@ namespace DeliveryProject.Models
         public decimal DeliveryFee { get; set; }
         [Column("DeliveryActive")]
         public bool DeliveryActive { get; set; }
+        [Column("DeliveryMinTime")]
+        public int DeliveryMinTime { get; set; }
+        [Column("DeliveryMaxTime")]
+        public int DeliveryMaxTime { get; set; }
         [Column("DateAdd")]
         public DateTime DateAdd { get; set; }
         [Column("DateEdit")]

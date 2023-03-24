@@ -13,9 +13,12 @@ namespace DeliveryProject.Controllers
             this.repo = repo;
         }
 
-        public IActionResult Index(int id)
+        public async Task<IActionResult> Index(int id)
         {
-            return View();
+            List<CategoryProduct> categoriesByRestaurant = await this.repo.GetRestaurantsCategoriesAsync(id);
+            ViewData["CATEGORIES"] = categoriesByRestaurant;
+            List<ProductListViewModel> modelList = await this.repo.GetRestaurantsCategoriesProductsAsync(id);
+            return View(modelList);
         }
     }
 }

@@ -7,12 +7,12 @@
 <div class="owl-carousel owl-theme pe-5 ps-5">
     @foreach (Category category in categories)
     {
-        <a asp-controller="Filter" asp-action="Category" asp-route-id="@category.Id">
+        <div onclick="loadRestaurants(1, 3, @category.Id); return false;" style="cursor: pointer;">
             <div class="item">
                 <img class="img img-fluid w-50 m-auto" src="~/assets/images/restaurantscategories/@category.Image" />
                 <h6 class="text-center mt-2">@category.Name</h6>
             </div>
-        </a>
+        </div>
     }
 </div>
 
@@ -79,9 +79,9 @@
 
 @section Scripts {
     <script>
-        function loadRestaurants(pageNumber, pageSize) {
+        function loadRestaurants(pageNumber, pageSize, category) {
             $.ajax({
-                url: "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize,
+                url: "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&category=" + category,
                 type: "GET",
                 dataType: "html",
                 success: function (data) {
