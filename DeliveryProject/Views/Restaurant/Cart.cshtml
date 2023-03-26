@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Cart";
+    List<Restaurant> Restaurants = ViewData["RESTAURANTS"] as List<Restaurant>;
 }
 
 @if (Model == null || Model.Count() < 1)
@@ -10,90 +11,210 @@
 }
 else
 {
-    <table class="table table-hover table-bordered w-75 m-auto">
-        <thead>
-            <tr>
-                <th>
-                    Id
-                </th>
-                <th>
-                    Imagen
-                </th>
-                <th>
-                    Nombre
-                </th>
-                <th>
-                    Descripción
-                </th>
-                <th>
-                    Precio
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+
+    <form asp-controller="Restaurant" asp-action="Checkout" method="post" onsubmit="return validateCart()">
+        <table class="table table-hover table-bordered w-75 m-auto">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        <img src="~/assets/images/products/@item.Image" class="img img-fluid w-auto" />
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    @if (item.IsDiscounted)
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DiscountPrice)
-                        </td>
-                    }
-                    else
-                    {
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Price)
-                        </td>
-                    }
-                    <td>
-                        <a asp-controller="Restaurant" asp-action="Cart" asp-route-idproduct="@item.Id" style="color: red">
-                            <i class="fa-solid fa-trash fa-xl"></i>
-                        </a>
-                    </td>
+                    <th>
+                        Id
+                    </th>
+                    <th>
+                        Imagen
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Descripción
+                    </th>
+                    <th>
+                        Precio
+                    </th>
+                    <th></th>
                 </tr>
-            }
-            <tr>
-                <td colspan="12">
-                    <div class="text-end">
-                        <strong>Precio total:</strong>
-                        @if (Model.Any(p => p.IsDiscounted))
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            <img src="~/assets/images/products/@item.Image" class="img img-fluid w-auto" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        @if (item.IsDiscounted)
                         {
-                            var totalDiscountedPrice = Model.Where(p => p.IsDiscounted).Sum(p => p.DiscountPrice);
-                            var totalNonDiscountedPrice = Model.Where(p => !p.IsDiscounted).Sum(p => p.Price);
-                            var totalPrice = totalDiscountedPrice + totalNonDiscountedPrice;
-                            <span class="ms-2">@totalPrice.ToString()</span>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DiscountPrice)
+                            </td>
                         }
                         else
                         {
-                            var totalPrice = Model.Sum(p => p.Price);
-                            <span class="ms-2">@totalPrice</span>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
                         }
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="12">
-                    <div class="text-center mt-4">
-                        <a asp-controller="Restaurant" asp-action="Checkout">
-                            Realizar pedido
-                        </a>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                        <td>
+                            <a asp-controller="Restaurant" asp-action="Cart" asp-route-idproduct="@item.Id" style="color: red">
+                                <i class="fa-solid fa-trash fa-xl"></i>
+                            </a>
+                        </td>
+                        <input type="hidden" name="restaurantid" value="@item.RestaurantId" />
+                    </tr>
+                }
+                <tr>
+                    <td colspan="12">
+                        <div class="text-end">
+                            <strong>Gastos de envío:</strong>
+                            @if (Model.Any(p => p.IsDiscounted))
+                            {
+                                var restaurantId = Model.FirstOrDefault()?.RestaurantId;
+                                var restaurant = Restaurants.FirstOrDefault(r => r.Id == restaurantId);
+                                var shippingFee = restaurant?.DeliveryFee ?? 0;
+                                <span class="ms-2">@shippingFee.ToString()</span>
+                            }
+                            else
+                            {
+                                var restaurantId = Model.FirstOrDefault()?.RestaurantId;
+                                var restaurant = Restaurants.FirstOrDefault(r => r.Id == restaurantId);
+                                var shippingFee = restaurant?.DeliveryFee ?? 0;
+                                <span class="ms-2">@shippingFee.ToString()</span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="12">
+                        <div class="text-end">
+                            <strong>Precio total:</strong>
+                            @if (Model.Any(p => p.IsDiscounted))
+                            {
+                                var totalDiscountedPrice = Model.Where(p => p.IsDiscounted).Sum(p => p.DiscountPrice);
+                                var totalNonDiscountedPrice = Model.Where(p => !p.IsDiscounted).Sum(p => p.Price);
+                                var totalPrice = totalDiscountedPrice + totalNonDiscountedPrice;
+                                var restaurantId = Model.FirstOrDefault()?.RestaurantId;
+                                var restaurant = Restaurants.FirstOrDefault(r => r.Id == restaurantId);
+                                var shippingFee = restaurant?.DeliveryFee ?? 0;
+                                var minimumAmount = restaurant?.MinimumAmount ?? 0;
+                                if (totalPrice < minimumAmount)
+                                {
+                                    totalPrice += shippingFee;
+                                }
+                                <span class="ms-2">@totalPrice.ToString()</span>
+                                <input type="hidden" value="@totalPrice" name="totalPrice">
+                                <input type="hidden" value="@minimumAmount" name="minimumAmount">
+                            }
+                            else
+                            {
+                                var totalPrice = Model.Sum(p => p.Price);
+                                var restaurantId = Model.FirstOrDefault()?.RestaurantId;
+                                var restaurant = Restaurants.FirstOrDefault(r => r.Id == restaurantId);
+                                var shippingFee = restaurant?.DeliveryFee ?? 0;
+                                var minimumAmount = restaurant?.MinimumAmount ?? 0;
+                                if (totalPrice < minimumAmount)
+                                {
+                                    totalPrice += shippingFee;
+                                }
+                                <span class="ms-2">@totalPrice</span>
+                                <input type="hidden" value="@totalPrice" name="totalPrice">
+                                <input type="hidden" value="@minimumAmount" name="minimumAmount">
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="12">
+                        <div class="text-center mt-4">
+                            <div class="form-group mb-4">
+                                <label for="deliveryMethod">Método de entrega:</label>
+                                <select name="deliveryMethod" id="deliveryMethod" class="form-select">
+                                    <option value="Delivery">Delivery</option>
+                                    <option value="Pickup">Recoger en tienda</option>
+                                </select>
+                            </div>
+                            <div class="form-group payment-method mb-4">
+                                <label>Método de pago:</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="radio" name="paymentMethod" value="Tarjeta de crédito" checked>
+                                        <label for="paymentMethod">Tarjeta de crédito </label><img src="~/assets/images/extras/visa.png" class="img img-fluid" style="max-width: 60px;"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="radio" name="paymentMethod" value="Efectivo">
+                                        <label for="paymentMethod">Efectivo </label><img src="~/assets/images/extras/dinero.png" class="img img-fluid" style="max-width: 60px;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group delivery-address mb-4">
+                                <label for="deliveryAddress">Dirección de entrega:</label>
+                                <input type="text" name="deliveryAddress" id="deliveryAddress" class="form-control"/>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Realizar pedido</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+}
+
+@section Scripts {
+    <script>
+        function validateCart() {
+            var restaurantIds = [];
+            var products = document.getElementsByName("restaurantid");
+            for (var i = 0; i < products.length; i++) {
+                var id = products[i].value;
+                if (restaurantIds.indexOf(id) < 0) {
+                    restaurantIds.push(id);
+                }
+            }
+            if (restaurantIds.length > 1) {
+                alert("Solo se puede comprar a un restaurante.");
+                return false;
+            }
+
+            var minimumAmount = parseFloat(document.querySelector('input[name="minimumAmount"]').value);
+            var totalPrice = parseFloat(document.querySelector('input[name="totalPrice"]').value);
+
+            if (totalPrice < minimumAmount) {
+                alert("El mínimo de compra es de: " + minimumAmount.toFixed(2) + "€.");
+                return false;
+            }
+
+            const deliveryAddress = document.getElementById("deliveryAddress").value;
+            const deliveryMethod = document.getElementById("deliveryMethod").value;
+            if (deliveryMethod === "Delivery" && deliveryAddress.trim() === "") {
+                alert("Por favor, ingrese su dirección de entrega");
+                return false;
+            }
+
+            return true;
+        }
+
+        $(document).ready(function () {
+            // Show the delivery address form group by default
+            $('.delivery-address').show();
+            $('.payment-method').show();
+
+            // Show/hide the delivery address form group based on the selected delivery method
+            $('#deliveryMethod').change(function () {
+                if ($(this).val() === 'Pickup') {
+                    $('.delivery-address').slideUp();
+                    $('.payment-method').slideUp();
+                } else {
+                    $('.payment-method').slideDown();
+                    $('.delivery-address').slideDown();
+                }
+            });
+        });
+    </script>
 }

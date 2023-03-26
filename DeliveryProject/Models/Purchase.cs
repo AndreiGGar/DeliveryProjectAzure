@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace DeliveryProject.Models
 {
     [Table("Purchases")]
-    public class Purchases
+    public class Purchase
     {
         [Key]
         [Column("Id")]
@@ -16,11 +16,11 @@ namespace DeliveryProject.Models
         [Column("Coupon")]
         public int Coupon { get; set; }
         [Column("ShippingFee")]
-        public decimal ShippingFee { get; set; }
+        public decimal? ShippingFee { get; set; }
         [Column("TotalPrice")]
         public decimal TotalPrice { get; set; }
         [Column("Status")]
-        public bool Status { get; set; }
+        public string Status { get; set; }
         [Column("Delivery")]
         public bool Delivery { get; set; }
         [Column("RequestDate")]
@@ -33,5 +33,9 @@ namespace DeliveryProject.Models
         public string? DeliveryAddress { get; set; }
         [Column("DeliveryMethod")]
         public string DeliveryMethod { get; set; }
+        [Column("Products")]
+        public string Products { get; set; }
+        [Column("PaymentMethod")]
+        public string? PaymentMethod { get; set; }
     }
 }

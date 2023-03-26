@@ -10,7 +10,6 @@
     <Folder Include="Filters\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="Helpers\" />
-    <Folder Include="wwwroot\assets\images\extras\" />
   </ItemGroup>
 
   <ItemGroup>

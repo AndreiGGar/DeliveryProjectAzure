@@ -12,5 +12,7 @@ namespace DeliveryProject.Context
         public DbSet<OpeningRestaurant> OpeningRestaurants { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<CategoryProduct> CategoriesProducts { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<PurchasedProduct> PurchasedProducts { get; set; }
     }
 }

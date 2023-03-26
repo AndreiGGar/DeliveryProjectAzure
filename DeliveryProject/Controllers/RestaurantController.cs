@@ -21,6 +21,8 @@ namespace DeliveryProject.Controllers
             ViewData["CATEGORIES"] = categoriesByRestaurant;
             List<Product> products = await this.repo.GetRestaurantsCategoriesProductsAsync(id);
             ViewData["PRODUCTS"] = products;
+            Restaurant restaurant = await this.repo.GetRestaurantByIdAsync(id);
+            ViewData["RESTAURANT"] = restaurant;
             return View();
         }
 
@@ -71,25 +73,67 @@ namespace DeliveryProject.Controllers
 
                 }
 
+                ViewData["RESTAURANTS"] = await this.repo.GetRestaurantsAsync();
+
                 List<Product> products = await this.repo.GetProductsCartAsync(cart);
                 return View(products);
             }
         }
+
+        [HttpGet]
         public async Task<IActionResult> Checkout()
         {
-            int idpurchase = await this.repo.GetMaxIdPurchaseAsync();
-            /*int idusuario = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);*/
+            return RedirectToAction("Cart");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod)
+        {
             List<int> cart = HttpContext.Session.GetObject<List<int>>("CART");
             List<Product> products = await this.repo.GetProductsCartAsync(cart);
 
-
-
-            /*foreach (Product product in products)
+            // Create a new purchase object
+            Purchase purchase = new Purchase();
+            purchase.Id = this.repo.GetMaxIdPurchase();
+            purchase.UserId = 1;
+            purchase.RestaurantId = restaurantid;
+            purchase.TotalPrice = decimal.Parse(totalPrice);
+            purchase.Status = "Pending";
+            if (deliveryMethod == "Delivery")
             {
-                this.repo.InsertarPedido(idfactura, libro.IdLibro, idusuario);
-            }*/
+                purchase.Delivery = true;
+                purchase.PaymentMethod = paymentMethod;
+            }
+            else
+            {
+                purchase.Delivery = false;
+                Random rnd = new Random();
+                string code = "";
+                for (int i = 0; i < 11; i++)
+                {
+                    code += rnd.Next(10).ToString();
+                }
+                purchase.Code = code;
+            }
+            purchase.RequestDate = DateTime.Now;
+            purchase.DeliveryMethod = deliveryMethod;
+            purchase.DeliveryAddress = deliveryAddress;
+            var productsCart = "";
+            foreach (Product product in products)
+            {
+                productsCart += product.Id + ",";
+            }
+            productsCart = productsCart.TrimEnd(',');
+            purchase.Products = productsCart;
+            this.repo.InsertPurchase(purchase.Id, purchase.UserId, purchase.RestaurantId, purchase.TotalPrice, purchase.Status, purchase.Delivery, purchase.RequestDate, purchase.DeliveryAddress, purchase.DeliveryMethod, purchase.Code, productsCart, purchase.PaymentMethod);
+            // Remove cart from session and redirect to success page
             HttpContext.Session.Remove("CART");
-            return RedirectToAction("Purchases", "Success");
+            return RedirectToAction("Success");
+        }
+
+        public async Task<IActionResult> Success()
+        {
+            return View();
         }
     }
 }

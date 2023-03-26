@@ -18,7 +18,7 @@ namespace DeliveryProject.Repositories
             return await this.context.Restaurants.ToListAsync();
         }
 
-        public async Task<Restaurant> FindRestaurantAsync(int id)
+        public async Task<Restaurant> GetRestaurantByIdAsync(int id)
         {
             return await this.context.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -79,6 +79,47 @@ namespace DeliveryProject.Repositories
             return await query.ToListAsync();
         }
 
+        public int GetMaxIdPurchase()
+        {
+            return this.context.Purchases.Max(z => z.Id) + 1;
+        }
 
+        public void InsertPurchaseProduct(int idpurchase, int idproduct, int quantity)
+        {
+            PurchasedProduct purchasedProduct = new PurchasedProduct();
+            purchasedProduct.PurchaseId = idpurchase;
+            purchasedProduct.ProductId = idproduct;
+            purchasedProduct.Quantity = quantity;
+            this.context.PurchasedProducts.Add(purchasedProduct);
+            this.context.SaveChanges();
+        }
+
+        public void InsertPurchase(int id, int userid, int restaurantId, decimal totalprice, string status, bool delivery, DateTime requestdate, string? deliveryaddress, string deliverymethod, string? code, string products, string paymentMethod)
+        {
+            Purchase purchase = new Purchase();
+            purchase.Id = id;
+            purchase.UserId = userid;
+            purchase.RestaurantId = restaurantId;
+            purchase.TotalPrice = totalprice;
+            purchase.Status = status;
+            purchase.Delivery = delivery;
+            purchase.RequestDate = requestdate;
+            if (deliveryaddress != null)
+            {
+                purchase.DeliveryAddress = deliveryaddress;
+            };
+            purchase.DeliveryMethod = deliverymethod;
+            if (code != null)
+            {
+                purchase.Code = code;
+            }
+            purchase.Products = products;
+            if (paymentMethod != null)
+            {
+                purchase.PaymentMethod = paymentMethod;
+            }
+            this.context.Purchases.Add(purchase);
+            this.context.SaveChanges();
+        }
     }
 }
