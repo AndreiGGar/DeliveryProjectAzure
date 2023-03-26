@@ -55,15 +55,30 @@ namespace DeliveryProject.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<List<ProductListViewModel>> GetRestaurantsCategoriesProductsAsync(int idrestaurant)
+        public async Task<List<Product>> GetRestaurantsCategoriesProductsAsync(int idrestaurant)
         {
+            /*var query = from restaurants in context.Restaurants
+                        join products in context.Products on restaurants.Id equals products.RestaurantId
+                        join categoriesproducts in context.CategoriesProducts on products.Category equals categoriesproducts.Id
+                        where idrestaurant == restaurants.Id
+                        select new ProductListViewModel { Products = new List<Product> { products }, CategoriesProducts = new List<CategoryProduct> { categoriesproducts } };*/
             var query = from restaurants in context.Restaurants
                         join products in context.Products on restaurants.Id equals products.RestaurantId
                         join categoriesproducts in context.CategoriesProducts on products.Category equals categoriesproducts.Id
                         where idrestaurant == restaurants.Id
-                        select new ProductListViewModel { Products = new List<Product> { products }, CategoriesProducts = new List<CategoryProduct> { categoriesproducts } };
+                        select products;
 
             return await query.ToListAsync();
         }
+
+        public async Task<List<Product>> GetProductsCartAsync(List<int> ids)
+        {
+            var query = from products in this.context.Products
+                        where ids.Contains(products.Id)
+                        select products;
+            return await query.ToListAsync();
+        }
+
+
     }
 }

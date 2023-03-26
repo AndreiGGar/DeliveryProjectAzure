@@ -1,0 +1,99 @@
+﻿@model IEnumerable<DeliveryProject.Models.Product>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+@if (Model == null || Model.Count() < 1)
+{
+    <h4 class="text-center mt-4">@ViewData["MESSAGE"]</h4>
+}
+else
+{
+    <table class="table table-hover table-bordered w-75 m-auto">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Imagen
+                </th>
+                <th>
+                    Nombre
+                </th>
+                <th>
+                    Descripción
+                </th>
+                <th>
+                    Precio
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        <img src="~/assets/images/products/@item.Image" class="img img-fluid w-auto" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    @if (item.IsDiscounted)
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DiscountPrice)
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                    }
+                    <td>
+                        <a asp-controller="Restaurant" asp-action="Cart" asp-route-idproduct="@item.Id" style="color: red">
+                            <i class="fa-solid fa-trash fa-xl"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="12">
+                    <div class="text-end">
+                        <strong>Precio total:</strong>
+                        @if (Model.Any(p => p.IsDiscounted))
+                        {
+                            var totalDiscountedPrice = Model.Where(p => p.IsDiscounted).Sum(p => p.DiscountPrice);
+                            var totalNonDiscountedPrice = Model.Where(p => !p.IsDiscounted).Sum(p => p.Price);
+                            var totalPrice = totalDiscountedPrice + totalNonDiscountedPrice;
+                            <span class="ms-2">@totalPrice.ToString()</span>
+                        }
+                        else
+                        {
+                            var totalPrice = Model.Sum(p => p.Price);
+                            <span class="ms-2">@totalPrice</span>
+                        }
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="12">
+                    <div class="text-center mt-4">
+                        <a asp-controller="Restaurant" asp-action="Checkout">
+                            Realizar pedido
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

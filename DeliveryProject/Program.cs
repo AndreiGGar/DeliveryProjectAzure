@@ -5,6 +5,14 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddResponseCaching();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromDays(7);
+});
+
 string connectionString = builder.Configuration.GetConnectionString("DeliveryDBAzure");
 builder.Services.AddTransient<RepositoryDelivery>();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
@@ -27,6 +35,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
