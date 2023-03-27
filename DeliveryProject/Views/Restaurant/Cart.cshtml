@@ -7,7 +7,9 @@
 
 @if (Model == null || Model.Count() < 1)
 {
-    <h4 class="text-center mt-4">@ViewData["MESSAGE"]</h4>
+    <div class="alert alert-info text-center mt-4" role="alert">
+        <h5>@ViewData["MESSAGE"]</h5>
+    </div>
 }
 else
 {

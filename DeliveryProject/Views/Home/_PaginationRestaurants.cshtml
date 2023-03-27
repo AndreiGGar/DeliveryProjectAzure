@@ -23,6 +23,13 @@
                                 <p class="mb-0">@restaurant.DeliveryMinTime - @restaurant.DeliveryMaxTime min.</p>
                             </div>
                         </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12 d-flex justify-content-end">
+                                <a class="btn btn-ouline-danger text-danger" asp-controller="Wishlist" asp-action="Add" asp-route-idrestaurant="@restaurant.Id">
+                                    <i class="fa-solid fa-heart"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </a>

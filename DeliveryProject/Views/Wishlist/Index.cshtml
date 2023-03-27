@@ -1,41 +1,48 @@
 ﻿@model List<Restaurant>
 
-<div class="row" id="restaurants-row">
-    @foreach (Restaurant restaurant in Model)
-    {
-        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3 mb-5 h-100">
-            <a asp-controller="Restaurant" asp-action="Index" asp-route-id="@restaurant.Id">
-                <div class="card border-0 shadow">
-                    <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:220px;" />
-                    <div class="card-body">
-                        <div class="row">
-                            <h5 class="card-title text-center mb-4">
-                                @restaurant.Name
-                            </h5>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 d-flex align-items-center">
-                                <i class="fa-solid fa-truck-fast me-2" style="color: black;"></i>
-                                <p class="mb-0">@restaurant.DeliveryFee €</p>
+@if (Model.Count == 0)
+{
+    <div class="alert alert-info text-center mt-4" role="alert">
+        <h5>¡Aún no has guardado ningún restaurante como favorito!</h5>
+    </div>
+}
+else
+{
+    <div class="row" id="restaurants-row">
+        @foreach (Restaurant restaurant in Model)
+        {
+            <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3 mb-5 h-100">
+                <a asp-controller="Restaurant" asp-action="Index" asp-route-id="@restaurant.Id">
+                    <div class="card border-0 shadow">
+                        <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:220px;" />
+                        <div class="card-body">
+                            <div class="row">
+                                <h5 class="card-title text-center mb-4">
+                                    @restaurant.Name
+                                </h5>
                             </div>
-                            <div class="col-md-6 d-flex align-items-center">
-                                <i class="fa-solid fa-clock-rotate-left me-2" style="color: black;"></i>
-                                <p class="mb-0">@restaurant.DeliveryMinTime - @restaurant.DeliveryMaxTime min.</p>
+                            <div class="row">
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <i class="fa-solid fa-truck-fast me-2" style="color: black;"></i>
+                                    <p class="mb-0">@restaurant.DeliveryFee €</p>
+                                </div>
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <i class="fa-solid fa-clock-rotate-left me-2" style="color: black;"></i>
+                                    <p class="mb-0">@restaurant.DeliveryMinTime - @restaurant.DeliveryMaxTime min.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-2">
-                            <div class="col-md-12 d-flex justify-content-end">
-                                <a class="btn btn-ouline-danger" asp-controller="Wishlist" asp-action="Add" asp-route-idrestaurant="@restaurant.Id">
-                                    <i class="fa-solid fa-heart"></i>
+                            <div class="row">
+                                <a href="@Url.Action("Delete", "Wishlist", new { idrestaurant = restaurant.Id })" class="btn btn-danger text-white mt-4">
+                                    Eliminar
                                 </a>
                             </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>
-    }
-</div>
+                </a>
+            </div>
+        }
+    </div>
+}
 
 <style>
     .owl-carousel {

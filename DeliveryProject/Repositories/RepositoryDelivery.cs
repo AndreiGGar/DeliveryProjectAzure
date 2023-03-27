@@ -164,7 +164,7 @@ namespace DeliveryProject.Repositories
             await this.context.SaveChangesAsync();
         }
 
-        public User LoginUser (string email, string encryptedPassword)
+        public User LoginUser(string email, string encryptedPassword)
 
         {
             User user = this.context.Users.FirstOrDefault(z => z.Email == email);
@@ -200,9 +200,78 @@ namespace DeliveryProject.Repositories
             return query.FirstOrDefault();
         }
 
-        public async Task<User> UserProfileAsync(int idusuario)
+        public async Task<User> UserProfileAsync(int iduser)
         {
-            return this.context.Users.FirstOrDefault(z => z.Id == idusuario);
+            return this.context.Users.FirstOrDefault(z => z.Id == iduser);
+        }
+        public async Task<List<Purchase>> GetPurchasesByUserIdAsync(int userId)
+        {
+            var purchases = await this.context.Purchases
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+
+            return purchases;
+        }
+
+        private int GetMaxIdWishlist()
+        {
+            if (this.context.Wishlist.Count() == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return this.context.Wishlist.Max(x => x.Id) + 1;
+            }
+        }
+
+        public async Task<List<Restaurant>> GetRestaurantsWithWishlistAsync(int userId)
+        {
+            var wishlist = await this.context.Wishlist
+                .Where(w => w.UserId == userId)
+                .ToListAsync();
+
+            var restaurantIds = wishlist.Select(w => w.RestaurantId).ToList();
+
+            var restaurants = await this.context.Restaurants
+                .Where(r => restaurantIds.Contains(r.Id))
+                .ToListAsync();
+
+            return restaurants;
+        }
+
+        public async Task<bool> RestaurantExistsInWishlist(int iduser, int idrestaurant)
+        {
+            Wishlist wishlist = await this.context.Wishlist.FirstOrDefaultAsync(w => w.UserId == iduser && w.RestaurantId == idrestaurant);
+            return wishlist != null;
+        }
+
+        public async Task AddToWishlist(int iduser, int idrestaurant, string dateAdd)
+        {
+            Wishlist wishlist = new Wishlist();
+            wishlist.Id = GetMaxIdWishlist();
+            wishlist.UserId = iduser;
+            wishlist.RestaurantId = idrestaurant;
+            wishlist.DateAdd = dateAdd;
+
+            this.context.Wishlist.Add(wishlist);
+            await this.context.SaveChangesAsync();
+        }
+
+        public async Task<Wishlist> GetWishlistItem(int iduser, int idrestaurant)
+        {
+            return await context.Wishlist.FirstOrDefaultAsync(w => w.UserId == iduser && w.RestaurantId == idrestaurant);
+        }
+
+        public async Task DeleteFromWishlist(int iduser, int idrestaurant)
+        {
+            var wishlistItem = await GetWishlistItem(iduser, idrestaurant);
+
+            if (wishlistItem != null)
+            {
+                context.Wishlist.Remove(wishlistItem);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

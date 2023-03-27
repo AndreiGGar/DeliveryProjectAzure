@@ -15,5 +15,6 @@ namespace DeliveryProject.Context
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<PurchasedProduct> PurchasedProducts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Wishlist> Wishlist { get; set; }
     }
 }

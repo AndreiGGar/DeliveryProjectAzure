@@ -109,7 +109,7 @@ namespace DeliveryProject.Controllers
             return RedirectToAction("Cart");
         }
 
-        [AuthorizeUsers(Policy = "user")]
+        [AuthorizeUsers(Policy = "USER")]
         [HttpPost]
         public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod)
         {
@@ -119,7 +119,7 @@ namespace DeliveryProject.Controllers
             // Create a new purchase object
             Purchase purchase = new Purchase();
             purchase.Id = this.repo.GetMaxIdPurchase();
-            purchase.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value); ;
+            purchase.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             purchase.RestaurantId = restaurantid;
             purchase.TotalPrice = decimal.Parse(totalPrice);
             purchase.Status = "Pending";

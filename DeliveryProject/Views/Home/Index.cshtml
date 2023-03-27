@@ -4,6 +4,14 @@
     List<Category> categories = ViewData["CATEGORIES"] as List<Category>;
 }
 
+@if (TempData["Message"] != null)
+{
+    <div class="alert @TempData["MessageType"] alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <div class="owl-carousel owl-theme pe-5 ps-5">
     @foreach (Category category in categories)
     {
