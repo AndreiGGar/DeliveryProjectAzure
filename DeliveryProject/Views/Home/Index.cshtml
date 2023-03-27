@@ -7,7 +7,7 @@
 <div class="owl-carousel owl-theme pe-5 ps-5">
     @foreach (Category category in categories)
     {
-        <div onclick="loadRestaurants(1, 3, @category.Id); return false;" style="cursor: pointer;">
+        <div class="category-item" data-category="@category.Id" style="cursor: pointer;">
             <div class="item">
                 <img class="img img-fluid w-50 m-auto" src="~/assets/images/restaurantscategories/@category.Image" />
                 <h6 class="text-center mt-2">@category.Name</h6>
@@ -19,52 +19,43 @@
 <div class="row">
     <div class="col-md-3 pe-5">
         <h2>Filtros</h2>
-        <form class="form">
-            <p>
-                <a class="d-flex justify-content-between align-items-center text-black" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    <h4>Ordenar <i class="fa-solid fa-arrow-up arrow-icon"></i></h4>
-                </a>
-            </p>
-            <div class="collapse show" id="collapseExample">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="relevancia" value="relevancia" checked>
-                    <label class="form-check-label" for="relevancia">
-                        Relevancia
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="novedades" value="novedades">
-                    <label class="form-check-label" for="novedades">
-                        Novedades
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="valoraciones" value="valoraciones">
-                    <label class="form-check-label" for="valoraciones">
-                        Valoraciones
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="ordenar" id="tiempoentrega" value="tiempoentrega">
-                    <label class="form-check-label" for="tiempoentrega">
-                        Tiempo de entrega
-                    </label>
-                </div>
+        <p>
+            <a class="d-flex justify-content-between align-items-center text-black text-decoration-none" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                <h4>Ordenar <i class="fa-solid fa-arrow-up arrow-icon ms-4"></i></h4>
+            </a>
+        </p>
+        <div class="collapse show" id="collapseExample">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="order" id="relevancia" value="relevancia" checked>
+                <label class="form-check-label" for="relevancia">
+                    Relevancia
+                </label>
             </div>
-            <div class="custom-control custom-switch">
-                <input class="custom-control-input" type="checkbox" name="customswitch" id="customswitch" value="customswitch">
-                <label class="custom-control-label" for="customswitch">
-                    Ofertas
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="order" id="novedades" value="novedades">
+                <label class="form-check-label" for="novedades">
+                    Novedades
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="order" id="tiempoentrega" value="tiempoentrega">
+                <label class="form-check-label" for="tiempoentrega">
+                    Tiempo de entrega
+                </label>
+            </div>
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="radio" name="order" id="menorgastominimo" value="menorgastominimo">
+                <label class="form-check-label" for="menorgastominimo">
+                    Menor gasto mínimo
                 </label>
             </div>
             <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+                <input class="custom-control-input" type="checkbox" name="free" id="free" value="free">
+                <label class="custom-control-label" for="free">
+                    Sin gastos de envío
+                </label>
             </div>
-            <button class="btn btn-dark">
-                Filtrar
-            </button>
-        </form>
+        </div>
     </div>
     <div class="col-md-9" id="pagination-restaurants">
     </div>
@@ -79,9 +70,14 @@
 
 @section Scripts {
     <script>
-        function loadRestaurants(pageNumber, pageSize, category) {
+        function loadRestaurants(pageNumber, pageSize) {
+            var category = $('.category-item.active').data('category');
+            var order = $('input[name=order]:checked').val();
+            var free = $('#free').is(':checked') ? "true" : "false";
+            var requestUrl = "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&category=" + category + "&order=" + order + "&free=" + free;
+            console.log(requestUrl);
             $.ajax({
-                url: "/Home/_PaginationRestaurants?pageNumber=" + pageNumber + "&pageSize=" + pageSize + "&category=" + category,
+                url: requestUrl,
                 type: "GET",
                 dataType: "html",
                 success: function (data) {
@@ -94,6 +90,21 @@
         }
 
         $(document).ready(function () {
+
+            $('.category-item').on('click', function () {
+                $('.category-item').removeClass('active');
+                $(this).addClass('active');
+                loadRestaurants(1, 3);
+            });
+
+            $('input[name=order]').on('change', function () {
+                loadRestaurants(1, 3);
+            });
+
+            $('#free').on('change', function () {
+                loadRestaurants(1, 3);
+            });
+
             $.ajax({
                 url: "/Home/_PaginationRestaurants",
                 type: "GET",

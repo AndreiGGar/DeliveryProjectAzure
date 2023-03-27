@@ -2,6 +2,8 @@
 using DeliveryProject.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Linq;
 
 namespace DeliveryProject.Controllers
 {
@@ -23,13 +25,38 @@ namespace DeliveryProject.Controllers
             return View();
         }
 
-        public async Task<IActionResult> _PaginationRestaurants(int? pageNumber, int? pageSize, int? category)
+        public async Task<IActionResult> _PaginationRestaurants(int? pageNumber, int? pageSize, int? category, string? order, bool? free)
         {
             pageNumber = pageNumber ?? 1;
             pageSize = pageSize ?? 3;
             category = category ?? 0;
+            order = order ?? "relevancia";
+            free = free ?? false;
 
             var restaurants = await this.repo.GetRestaurantsByCategoryAsync(category.Value);
+
+            if (free != false)
+            {
+                restaurants = restaurants.Where(r => r.DeliveryFee == 0).ToList();
+            }
+
+            switch (order)
+            {
+                case "relevancia":
+                    restaurants = restaurants.OrderBy(r => r.Id).ToList();
+                    break;
+                case "novedades":
+                    restaurants = restaurants.OrderByDescending(r => r.DateAdd).ToList();
+                    break;
+                case "tiempoentrega":
+                    restaurants = restaurants.OrderBy(r => r.DeliveryMinTime).ToList();
+                    break;
+                case "menorgastominimo":
+                    restaurants = restaurants.OrderBy(r => r.MinimumAmount).ToList();
+                    break;
+                default:
+                    break;
+            }
 
             var RestaurantListViewModel = new RestaurantListViewModel
             {

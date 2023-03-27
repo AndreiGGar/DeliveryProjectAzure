@@ -24,16 +24,17 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand ms-3" href="/">
                     <img src="~/assets/images/project/Delivery.png" alt="Bootstrap" style="max-width: 150px;">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-center" id="navbarTogglerDemo03">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    <form class="d-flex" role="search" asp-controller="Restaurant" asp-action="Search" method="post">
+                        <input type="hidden" name="search" value="">
+                        <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search" onkeyup="document.querySelector('input[name=\'search\']').value = this.value;">
+                        <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -70,8 +71,8 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - DeliveryProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container text-center">
+            &copy; 2023 - DeliveryProject - Hecho por Andrei Garbea
         </div>
     </footer>
 

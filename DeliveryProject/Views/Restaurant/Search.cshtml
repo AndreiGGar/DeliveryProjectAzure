@@ -1,0 +1,129 @@
+﻿@model List<Restaurant>
+
+<div class="row" id="restaurants-row">
+    @foreach (Restaurant restaurant in Model)
+    {
+        <div class="col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3 mb-5 h-100">
+            <a asp-controller="Restaurant" asp-action="Index" asp-route-id="@restaurant.Id">
+                <div class="card border-0 shadow">
+                    <img class="card-img-top" src="~/assets/images/restaurants/@restaurant.Image" style="width: 100%; height:220px;" />
+                    <div class="card-body">
+                        <div class="row">
+                            <h5 class="card-title text-center mb-4">
+                                @restaurant.Name
+                            </h5>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <i class="fa-solid fa-truck-fast me-2" style="color: black;"></i>
+                                <p class="mb-0">@restaurant.DeliveryFee €</p>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <i class="fa-solid fa-clock-rotate-left me-2" style="color: black;"></i>
+                                <p class="mb-0">@restaurant.DeliveryMinTime - @restaurant.DeliveryMaxTime min.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .owl-carousel {
+        margin-top: 2em;
+        margin-bottom: 2.5em;
+    }
+
+        .owl-carousel a {
+            text-decoration: none;
+            color: black;
+        }
+
+    #restaurants-row a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .custom-control-label {
+        position: relative;
+        margin-bottom: 0;
+        vertical-align: top;
+    }
+
+    .custom-control-input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+
+    .custom-switch {
+        padding-left: 2.25rem;
+    }
+
+    .custom-control {
+        position: relative;
+        display: block;
+        min-height: 1.5rem;
+    }
+
+    .custom-control-input:checked ~ .custom-control-label::before {
+        color: #fff;
+        border-color: #0b55c1;
+        background-color: #0b55c1;
+    }
+
+    .custom-switch .custom-control-label::before {
+        left: -2.25rem;
+        width: 1.75rem;
+        pointer-events: all;
+        border-radius: .5rem;
+    }
+
+    .custom-control-label::before, .custom-file-label, .custom-select {
+        transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    .custom-control-label::before {
+        position: absolute;
+        top: .25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        pointer-events: none;
+        content: "";
+        background-color: #fff;
+        border: #adb5bd solid 1px;
+    }
+
+    .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+        background-color: #fff;
+        -webkit-transform: translateX(.75rem);
+        transform: translateX(.75rem);
+    }
+
+    .custom-switch .custom-control-label::after {
+        top: calc(.25rem + 2px);
+        left: calc(-2.25rem + 2px);
+        width: calc(1rem - 4px);
+        height: calc(1rem - 4px);
+        background-color: #adb5bd;
+        border-radius: .5rem;
+        transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-transform .15s ease-in-out;
+        transition: transform .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        transition: transform .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-transform .15s ease-in-out;
+    }
+
+    .custom-control-label::after {
+        position: absolute;
+        top: .25rem;
+        left: -1.5rem;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        content: "";
+        background: no-repeat 50%/50% 50%;
+    }
+</style>

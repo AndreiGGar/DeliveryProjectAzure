@@ -26,6 +26,27 @@ namespace DeliveryProject.Controllers
             return View();
         }
 
+        
+        public async Task<IActionResult> Search()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Search(string search)
+        {
+            if (search == null || search == "" || search == " ")
+            {
+                List<Restaurant> restaurants = await this.repo.GetRestaurantsAsync();
+                return View(restaurants);
+
+            } else
+            {
+                List<Restaurant> restaurants = await this.repo.GetRestaurantBySearchAsync(search);
+                return View(restaurants);
+            }
+        }
+
         public async Task<IActionResult> AddCart(int? idproduct)
         {
             if (idproduct != null)

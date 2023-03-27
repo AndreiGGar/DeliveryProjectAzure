@@ -23,6 +23,11 @@ namespace DeliveryProject.Repositories
             return await this.context.Restaurants.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<List<Restaurant>> GetRestaurantBySearchAsync(string search)
+        {
+            return await this.context.Restaurants.Where(z => z.Name.Contains(search)).ToListAsync();
+        }
+
         public async Task<List<Category>> GetCategoriesAsync()
         {
             return await this.context.Categories.ToListAsync();
