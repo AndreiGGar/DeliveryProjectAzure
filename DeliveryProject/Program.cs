@@ -1,5 +1,6 @@
 using DeliveryProject.Context;
 using DeliveryProject.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,15 +10,40 @@ builder.Services.AddResponseCaching();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddMemoryCache();
 
-builder.Services.AddSession(options => {
+builder.Services.AddSession(options =>
+{
     options.IdleTimeout = TimeSpan.FromDays(7);
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("USER",
+        policy =>
+        policy.RequireRole("user"));
+    options.AddPolicy("ADMIN",
+        policy =>
+        policy.RequireRole("admin"));
 });
 
 string connectionString = builder.Configuration.GetConnectionString("DeliveryDBAzure");
 builder.Services.AddTransient<RepositoryDelivery>();
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie(
+    CookieAuthenticationDefaults.AuthenticationScheme,
+    config =>
+    {
+        config.AccessDeniedPath = "/Managed/Error";
+    });
+
+builder.Services.AddControllersWithViews(
+    options => options.EnableEndpointRouting = false)
+    .AddSessionStateTempDataProvider();
 
 var app = builder.Build();
 
@@ -34,11 +60,21 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseSession();
 
-app.MapControllerRoute(
+app.UseMvc(routes =>
+{
+    routes.MapRoute(
+        name: "Default",
+        template: "{controller=Home}/{action=Index}/{id?}"
+    );
+});
+
+/*app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");*/
 
 app.Run();

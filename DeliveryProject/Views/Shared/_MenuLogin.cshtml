@@ -1,0 +1,26 @@
+﻿@if (Context.User.Identity.IsAuthenticated == false)
+{
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="Managed" asp-action="Login">
+            Iniciar Sesión
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="Managed" asp-action="Register">
+            Registrarse
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="User" asp-action="Profile">
+            <img src="~/assets/images/users/0-user.png" style="max-width: 40px" />
+        </a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="Managed" asp-action="Logout">
+            Cerrar sesión
+        </a>
+    </li>
+}

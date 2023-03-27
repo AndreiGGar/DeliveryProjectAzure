@@ -1,6 +1,8 @@
 ﻿using DeliveryProject.Extensions;
+using DeliveryProject.Filters;
 using DeliveryProject.Models;
 using DeliveryProject.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -107,6 +109,7 @@ namespace DeliveryProject.Controllers
             return RedirectToAction("Cart");
         }
 
+        [AuthorizeUsers(Policy = "user")]
         [HttpPost]
         public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod)
         {
@@ -116,7 +119,7 @@ namespace DeliveryProject.Controllers
             // Create a new purchase object
             Purchase purchase = new Purchase();
             purchase.Id = this.repo.GetMaxIdPurchase();
-            purchase.UserId = 1;
+            purchase.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value); ;
             purchase.RestaurantId = restaurantid;
             purchase.TotalPrice = decimal.Parse(totalPrice);
             purchase.Status = "Pending";

@@ -1,4 +1,5 @@
 ﻿using DeliveryProject.Context;
+using DeliveryProject.Helpers;
 using DeliveryProject.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -86,7 +87,14 @@ namespace DeliveryProject.Repositories
 
         public int GetMaxIdPurchase()
         {
-            return this.context.Purchases.Max(z => z.Id) + 1;
+            if (this.context.Purchases.Count() == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return this.context.Purchases.Max(z => z.Id) + 1;
+            }
         }
 
         public void InsertPurchaseProduct(int idpurchase, int idproduct, int quantity)
@@ -125,6 +133,76 @@ namespace DeliveryProject.Repositories
             }
             this.context.Purchases.Add(purchase);
             this.context.SaveChanges();
+        }
+
+        private int GetMaxIdUser()
+        {
+            if (this.context.Users.Count() == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return this.context.Users.Max(x => x.Id) + 1;
+            }
+        }
+
+        public async Task RegisterUser(string email, string name, string password, string rol, DateTime dateAdd, string image)
+        {
+            User user = new User();
+            user.Id = this.GetMaxIdUser();
+            user.Email = email;
+            user.Name = name;
+            user.Password = password;
+            user.Salt = HelperCryptography.GenerateSalt();
+            user.EncryptedPassword = HelperCryptography.EncryptPassword(password, user.Salt);
+            user.Rol = rol;
+            user.DateAdd = dateAdd;
+            user.Image = image;
+
+            this.context.Users.Add(user);
+            await this.context.SaveChangesAsync();
+        }
+
+        public User LoginUser (string email, string encryptedPassword)
+
+        {
+            User user = this.context.Users.FirstOrDefault(z => z.Email == email);
+
+            if (user == null)
+            {
+                return null;
+            }
+            else
+            {
+                byte[] passUser = user.EncryptedPassword;
+                string salt = user.Salt;
+                byte[] temp = HelperCryptography.EncryptPassword(encryptedPassword, salt);
+                bool response = HelperCryptography.CompareArrays(passUser, temp);
+
+                if (response == true)
+                {
+                    return user;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public async Task<User> FindUserAsync(string email, string password)
+        {
+            var query = from data in this.context.Users
+                        where data.Email == email && data.Password == password
+                        select data;
+
+            return query.FirstOrDefault();
+        }
+
+        public async Task<User> UserProfileAsync(int idusuario)
+        {
+            return this.context.Users.FirstOrDefault(z => z.Id == idusuario);
         }
     }
 }
