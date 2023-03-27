@@ -42,19 +42,19 @@
         @if (Model.PaginationRestaurants.CurrentPage > 1)
         {
             <li class="page-item">
-                <button class="page-link" onclick="loadRestaurants(@Model.PaginationRestaurants.CurrentPage - 1, 3, @Model.SelectedCategory); return false;">Anterior</button>
+                <button class="page-link" onclick="loadRestaurants(@Model.PaginationRestaurants.CurrentPage - 1, 6, @Model.SelectedCategory); return false;">Anterior</button>
             </li>
         }
         @for (int i = 1; i <= Model.PaginationRestaurants.TotalPages; i++)
         {
             <li class="page-item @(i == Model.PaginationRestaurants.CurrentPage ? "active" : "")">
-                <button class="page-link" onclick="loadRestaurants(@i, 3, @Model.SelectedCategory); return false;">@i</button>
+                <button class="page-link" onclick="loadRestaurants(@i, 6, @Model.SelectedCategory); return false;">@i</button>
             </li>
         }
         @if (Model.PaginationRestaurants.CurrentPage < Model.PaginationRestaurants.TotalPages)
         {
             <li class="page-item">
-                <button class="page-link" onclick="loadRestaurants(@Model.PaginationRestaurants.CurrentPage + 1, 3, @Model.SelectedCategory); return false;">Siguiente</button>
+                <button class="page-link" onclick="loadRestaurants(@Model.PaginationRestaurants.CurrentPage + 1, 6, @Model.SelectedCategory); return false;">Siguiente</button>
             </li>
         }
     </ul>

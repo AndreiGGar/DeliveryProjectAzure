@@ -102,15 +102,15 @@
             $('.category-item').on('click', function () {
                 $('.category-item').removeClass('active');
                 $(this).addClass('active');
-                loadRestaurants(1, 3);
+                loadRestaurants(1, 6);
             });
 
             $('input[name=order]').on('change', function () {
-                loadRestaurants(1, 3);
+                loadRestaurants(1, 6);
             });
 
             $('#free').on('change', function () {
-                loadRestaurants(1, 3);
+                loadRestaurants(1, 6);
             });
 
             $.ajax({

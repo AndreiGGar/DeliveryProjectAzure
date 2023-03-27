@@ -43,9 +43,15 @@ else
                         <td>
                             @Html.DisplayFor(modelItem => item.Id)
                         </td>
-                        <td>
-                            <img src="~/assets/images/products/@item.Image" class="img img-fluid w-auto" />
-                        </td>
+                        @if (item.Image != null)
+                        {
+                            <td>
+                                <img src="~/assets/images/products/@item.Image" class="img img-fluid w-auto" />
+                            </td>
+                        } else
+                        {
+                            <td>X</td>
+                        }
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>

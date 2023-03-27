@@ -28,7 +28,7 @@ namespace DeliveryProject.Controllers
         public async Task<IActionResult> _PaginationRestaurants(int? pageNumber, int? pageSize, int? category, string? order, bool? free)
         {
             pageNumber = pageNumber ?? 1;
-            pageSize = pageSize ?? 3;
+            pageSize = pageSize ?? 6;
             category = category ?? 0;
             order = order ?? "relevancia";
             free = free ?? false;
