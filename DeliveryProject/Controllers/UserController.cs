@@ -15,7 +15,7 @@ namespace DeliveryProject.Controllers
             this.repo = repo;
         }
 
-        [AuthorizeUsers(Policy = "USER")]
+        [AuthorizeUsers]
         public async Task<IActionResult> Profile()
         {
             User user = await this.repo.UserProfileAsync(int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value));
