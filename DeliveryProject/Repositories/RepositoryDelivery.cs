@@ -14,6 +14,7 @@ namespace DeliveryProject.Repositories
             this.context = context;
         }
 
+        #region Restaurants | Categories | Products
         public async Task<List<Restaurant>> GetRestaurantsAsync()
         {
             return await this.context.Restaurants.ToListAsync();
@@ -76,7 +77,9 @@ namespace DeliveryProject.Repositories
 
             return await query.ToListAsync();
         }
+        #endregion
 
+        #region Purchases and cart
         public async Task<List<Product>> GetProductsCartAsync(List<int> ids)
         {
             var query = from products in this.context.Products
@@ -134,8 +137,10 @@ namespace DeliveryProject.Repositories
             this.context.Purchases.Add(purchase);
             this.context.SaveChanges();
         }
+        #endregion
 
-        private int GetMaxIdUser()
+        #region Users
+        public int GetMaxIdUser()
         {
             if (this.context.Users.Count() == 0)
             {
@@ -212,8 +217,10 @@ namespace DeliveryProject.Repositories
 
             return purchases;
         }
+        #endregion
 
-        private int GetMaxIdWishlist()
+        #region Wishlist
+        public int GetMaxIdWishlist()
         {
             if (this.context.Wishlist.Count() == 0)
             {
@@ -273,5 +280,7 @@ namespace DeliveryProject.Repositories
                 await context.SaveChangesAsync();
             }
         }
+
+        #endregion
     }
 }

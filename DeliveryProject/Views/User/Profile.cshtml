@@ -3,9 +3,13 @@
 <div class="row">
 
     <div class="col-md-2">
-        <a asp-controller="User" asp-action="Profile" class="btn btn-dark mb-4">Perfil</a>
-        <a asp-controller="User" asp-action="Purchases" class="btn btn-dark mb-4">Mis compras</a>
-        <a asp-controller="User" asp-action="Restaurants" class="btn btn-dark mb-4">Restaurantes</a>
+        <div class="row">
+            <a asp-controller="User" asp-action="Profile" class="btn btn-dark mb-4">Perfil</a>
+            <a asp-controller="User" asp-action="Purchases" class="btn btn-dark mb-4">Mis compras</a>
+        </div>
+        @*<div class="row">
+            <a asp-controller="User" asp-action="Restaurants" class="btn btn-info mb-4">Restaurantes</a>
+        </div>*@
     </div>
 
     <div class="col-md-10">
