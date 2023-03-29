@@ -4,13 +4,7 @@
 
 <div class="row">
     <div class="col-md-2 p-4">
-        <div class="row">
-            <a asp-controller="User" asp-action="Profile" class="btn btn-dark mb-4">Perfil</a>
-            <a asp-controller="User" asp-action="Purchases" class="btn btn-dark mb-4">Mis compras</a>
-        </div>
-        @*<div class="row">
-        <a asp-controller="User" asp-action="Restaurants" class="btn btn-info mb-4">Restaurantes</a>
-        </div>*@
+        <partial name="_MenuUsuario" />
     </div>
     <div class="col-md-10">
         @if (Model.Count == 0)

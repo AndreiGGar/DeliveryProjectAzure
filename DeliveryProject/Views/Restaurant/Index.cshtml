@@ -35,7 +35,7 @@
             {
                 @foreach (var cat in categoriesByRestaurant)
                 {
-                    var productsInCategory = products.Where(p => p.Category == cat.Id && p.IsActive && (p.IsAvailable || p.IsDiscounted)).ToList();
+                    var productsInCategory = products.Where(p => p.Category == cat.Id && p.IsActive).ToList();
                     <div class="row mb-4" id="@cat.Name">
                         <div class="col-12">
                             <h4>@cat.Name</h4>
@@ -44,7 +44,7 @@
                         @if (productsInCategory.Any())
                         {
 
-                            @foreach (var prod in products.Where(p => p.Category == cat.Id && p.IsActive && (p.IsAvailable || p.IsDiscounted)))
+                            @foreach (var prod in products.Where(p => p.Category == cat.Id && p.IsActive))
                             {
                                 <div class="col-12 mb-4" id="@prod.Id">
                                     <div class="card h-100">
@@ -180,7 +180,7 @@
                 <p>Página web: <a href="@restaurant.Website" target="_blank" style="color: black">@restaurant.Website</a></p>
             }
             <h6 class="mb-4">Dirección: @restaurant.Address, @restaurant.City, @restaurant.ZipCode</h6>
-            <div style="width: 100%" class="mt-2"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="@restaurant.Maps"></iframe></div>
+            <div style="width: 100%" class="mt-2"><iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="@restaurant.Maps"></iframe></div>
         </div>
     </div>
 </div>

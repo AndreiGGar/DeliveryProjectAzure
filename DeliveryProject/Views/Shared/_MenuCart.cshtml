@@ -1,0 +1,33 @@
+﻿@{
+    int qtyCart = 0;
+
+    if (Context.Session.GetObject<List<int>>("CART") != null)
+    {
+        qtyCart = Context.Session.GetObject<List<int>>("CART").Count();
+    }
+}
+
+
+
+@if (Context.Session.GetString("CART") != null)
+{
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="Restaurant" asp-action="Cart" style="display: flex; align-items: center;">
+            <span class="badge text-bg-light text-black me-1">
+                @qtyCart
+            </span>
+            <i class="fa-solid fa-cart-shopping fa-lg" style="color: white"></i>
+        </a>
+    </li>
+}
+else
+{
+    <li class="nav-item me-3">
+        <a class="nav-link" asp-controller="Restaurant" asp-action="Cart" style="display: flex; align-items: center;">
+            <span class="badge text-bg-light text-black me-1">
+                0
+            </span>
+            <i class="fa-solid fa-cart-shopping fa-lg" style="color: white"></i>
+        </a>
+    </li>
+}

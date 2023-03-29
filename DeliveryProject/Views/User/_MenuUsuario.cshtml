@@ -1,0 +1,14 @@
+﻿@if (@Context.User.FindFirst(ClaimTypes.Role).Value == "admin")
+{
+    <div class="row">
+        <a asp-controller="User" asp-action="Profile" class="btn btn-dark mb-4">Perfil</a>
+        <a asp-controller="User" asp-action="Restaurants" class="btn btn-dark mb-4">Restaurantes</a>
+    </div>
+}
+else
+{
+    <div class="row">
+        <a asp-controller="User" asp-action="Profile" class="btn btn-dark mb-4">Perfil</a>
+        <a asp-controller="User" asp-action="Purchases" class="btn btn-dark mb-4">Mis compras</a>
+    </div>
+}
