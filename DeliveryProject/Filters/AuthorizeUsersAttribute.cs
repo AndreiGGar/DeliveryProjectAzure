@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
-namespace DeliveryProject.Filters
+namespace DeliveryProjectAzure.Filters
 {
     public class AuthorizeUsersAttribute : AuthorizeAttribute, IAuthorizationFilter
     {

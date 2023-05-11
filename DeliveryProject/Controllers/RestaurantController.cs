@@ -1,12 +1,12 @@
-﻿using DeliveryProject.Extensions;
-using DeliveryProject.Filters;
-using DeliveryProject.Models;
-using DeliveryProject.Repositories;
+﻿using DeliveryProjectAzure.Extensions;
+using DeliveryProjectAzure.Filters;
+using DeliveryProjectAzure.Models;
+using DeliveryProjectAzure.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace DeliveryProject.Controllers
+namespace DeliveryProjectAzure.Controllers
 {
     public class RestaurantController : Controller
     {

@@ -1,7 +1,7 @@
-﻿using DeliveryProject.Models;
+﻿using DeliveryProjectAzure.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryProject.Context
+namespace DeliveryProjectAzure.Context
 {
     public class DataContext : DbContext
     {

@@ -1,5 +1,5 @@
-using DeliveryProject.Context;
-using DeliveryProject.Repositories;
+using DeliveryProjectAzure.Context;
+using DeliveryProjectAzure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 

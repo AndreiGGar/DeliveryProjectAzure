@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "DeliveryProject": {
+    "DeliveryProjectAzure": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

@@ -1,6 +1,6 @@
-﻿using DeliveryProject.Models;
+﻿using DeliveryProjectAzure.Models;
 
-namespace DeliveryProject.Repositories
+namespace DeliveryProjectAzure.Repositories
 {
     public interface IRepositoryDelivery
     {

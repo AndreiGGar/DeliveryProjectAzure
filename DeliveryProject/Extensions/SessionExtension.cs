@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace DeliveryProject.Extensions
+namespace DeliveryProjectAzure.Extensions
 {
     public static class SessionExtension
     {

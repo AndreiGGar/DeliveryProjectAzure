@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DeliveryProject.Helpers
+namespace DeliveryProjectAzure.Helpers
 {
     public class HelperCryptography
     {

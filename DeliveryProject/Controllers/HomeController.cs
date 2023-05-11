@@ -1,11 +1,11 @@
-﻿using DeliveryProject.Models;
-using DeliveryProject.Repositories;
+﻿using DeliveryProjectAzure.Models;
+using DeliveryProjectAzure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Linq;
 
-namespace DeliveryProject.Controllers
+namespace DeliveryProjectAzure.Controllers
 {
     public class HomeController : Controller
     {

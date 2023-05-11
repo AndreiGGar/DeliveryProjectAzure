@@ -1,9 +1,9 @@
-﻿using DeliveryProject.Context;
-using DeliveryProject.Helpers;
-using DeliveryProject.Models;
+﻿using DeliveryProjectAzure.Context;
+using DeliveryProjectAzure.Helpers;
+using DeliveryProjectAzure.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryProject.Repositories
+namespace DeliveryProjectAzure.Repositories
 {
     public class RepositoryDelivery : IRepositoryDelivery
     {

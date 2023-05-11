@@ -1,10 +1,10 @@
-﻿using DeliveryProject.Filters;
-using DeliveryProject.Models;
-using DeliveryProject.Repositories;
+﻿using DeliveryProjectAzure.Filters;
+using DeliveryProjectAzure.Models;
+using DeliveryProjectAzure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace DeliveryProject.Controllers
+namespace DeliveryProjectAzure.Controllers
 {
     public class UserController : Controller
     {

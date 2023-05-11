@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using DeliveryProject.Models;
-using DeliveryProject.Repositories;
+using DeliveryProjectAzure.Models;
+using DeliveryProjectAzure.Repositories;
 
-namespace DeliveryProject.Controllers
+namespace DeliveryProjectAzure.Controllers
 {
     public class ManagedController : Controller
     {
