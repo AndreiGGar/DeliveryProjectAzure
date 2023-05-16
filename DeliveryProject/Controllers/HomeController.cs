@@ -1,26 +1,26 @@
-﻿using DeliveryProjectAzure.Models;
-using DeliveryProjectAzure.Repositories;
+﻿using DeliveryProjectNuget.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Linq;
+using DeliveryProjectAzure.Services;
 
 namespace DeliveryProjectAzure.Controllers
 {
     public class HomeController : Controller
     {
-        private RepositoryDelivery repo;
+        private ServiceApiDelivery service;
 
-        public HomeController(RepositoryDelivery repo)
+        public HomeController(ServiceApiDelivery service)
         {
-            this.repo = repo;
+            this.service = service;
         }
 
         public async Task<IActionResult> Index()
         {
-            List<Restaurant> restaurants = await this.repo.GetRestaurantsAsync();
+            List<Restaurant> restaurants = await this.service.GetRestaurantsAsync();
             ViewData["RESTAURANTS"] = restaurants;
-            List<Category> categories = await this.repo.GetCategoriesAsync();
+            List<Category> categories = await this.service.GetCategoriesAsync();
             ViewData["CATEGORIES"] = categories;
             return View();
         }
@@ -33,7 +33,7 @@ namespace DeliveryProjectAzure.Controllers
             order = order ?? "relevancia";
             free = free ?? false;
 
-            var restaurants = await this.repo.GetRestaurantsByCategoryAsync(category.Value);
+            var restaurants = await this.service.GetRestaurantsByCategoryAsync(category.Value);
 
             if (free != false)
             {

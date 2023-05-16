@@ -2,18 +2,18 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using DeliveryProjectAzure.Models;
-using DeliveryProjectAzure.Repositories;
+using DeliveryProjectNuget.Models;
+using DeliveryProjectAzure.Services;
 
 namespace DeliveryProjectAzure.Controllers
 {
     public class ManagedController : Controller
     {
-        private RepositoryDelivery repo;
+        private ServiceApiDelivery service;
 
-        public ManagedController (RepositoryDelivery repo)
+        public ManagedController (ServiceApiDelivery service)
         {
-            this.repo = repo;
+            this.service = service;
         }
 
         public IActionResult Login()
@@ -37,22 +37,23 @@ namespace DeliveryProjectAzure.Controllers
             user.Rol = "user";
             user.DateAdd = DateTime.Now;
             user.Image = "0-user.png";
-            await this.repo.RegisterUser(user.Email, user.Name, user.Password, user.Rol, user.DateAdd, user.Image);
-
+            await this.service.RegisterUserAsync(user.Email, user.Name, user.Password, user.Rol, user.DateAdd, user.Image);
             return RedirectToAction("Login");
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            User user = this.repo.LoginUser(email, password);
-            if (user == null)
+            User user = await this.service.FindUserAsync(email);
+            string token = await this.service.LoginUserAsync(email, password);
+            if (token == null)
             {
                 ViewData["MENSAJE"] = "Credenciales incorrectas";
                 return View();
             }
             else
             {
+                HttpContext.Session.SetString("token", token);
                 ClaimsIdentity identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
 
                 Claim claimName = new Claim(ClaimTypes.Name, user.Name);
@@ -91,6 +92,7 @@ namespace DeliveryProjectAzure.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Remove("token");
             return RedirectToAction("Index", "Home");
         }
 

@@ -1,36 +1,35 @@
 ﻿using DeliveryProjectAzure.Filters;
-using DeliveryProjectAzure.Models;
-using DeliveryProjectAzure.Repositories;
+using DeliveryProjectNuget.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using DeliveryProjectAzure.Services;
 
 namespace DeliveryProjectAzure.Controllers
 {
     [AuthorizeUsers(Policy = "USER")]
     public class WishlistController : Controller
     {
-        private RepositoryDelivery repo;
+        private ServiceApiDelivery service;
 
-        public WishlistController(RepositoryDelivery repo)
+        public WishlistController(ServiceApiDelivery service)
         {
-            this.repo = repo;
+            this.service = service;
         }
 
         public async Task<IActionResult> Index()
         {
-            var iduser = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            List<Restaurant> restaurants = await this.repo.GetRestaurantsWithWishlistAsync(iduser);
+            /*var iduser = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);*/
+            List<Restaurant> restaurants = await this.service.GetRestaurantsWithWishlistAsync(HttpContext.Session.GetString("token"));
             return View(restaurants);
         }
 
         public async Task<IActionResult> Add(int idrestaurant)
         {
-            var iduser = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             DateTime now = DateTime.UtcNow;
             string time = now.ToString("yyyy-MM-dd HH:mm:ss");
 
             // Check if the restaurant is already in the user's wishlist
-            bool restaurantExists = await this.repo.RestaurantExistsInWishlist(iduser, idrestaurant);
+            bool restaurantExists = await this.service.RestaurantExistsInWishlist(HttpContext.Session.GetString("token"), idrestaurant);
 
             if (restaurantExists)
             {
@@ -39,7 +38,7 @@ namespace DeliveryProjectAzure.Controllers
             }
             else
             {
-                await this.repo.AddToWishlist(iduser, idrestaurant, time);
+                await this.service.AddToWishlistAsync(HttpContext.Session.GetString("token"), idrestaurant, time);
                 TempData["Message"] = "¡Restaurante agregado a favoritos!";
                 TempData["MessageType"] = "alert-success";
             }
@@ -50,8 +49,7 @@ namespace DeliveryProjectAzure.Controllers
 
         public async Task<IActionResult> Delete(int idrestaurant)
         {
-            var iduser = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await this.repo.DeleteFromWishlist(iduser, idrestaurant);
+            await this.service.DeleteFromWishlistAsync(HttpContext.Session.GetString("token"), idrestaurant);
             return RedirectToAction("Index");
         }
     }

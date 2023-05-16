@@ -1,9 +1,21 @@
-using DeliveryProjectAzure.Context;
-using DeliveryProjectAzure.Repositories;
+using Azure.Security.KeyVault.Secrets;
+using DeliveryProjectAzure.Services;
+using DeliveryProjectNuget.Helpers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
+/*string connectionString = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount");*/
+builder.Services.AddAzureClients(factory =>
+{
+    factory.AddSecretClient(builder.Configuration.GetSection("KeyVault"));
+});
+
+SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
+KeyVaultSecret keyVaultSecret = await secretClient.GetSecretAsync("DeliveryApi");
+
+string azureKeys = keyVaultSecret.Value;
 
 // Add services to the container.
 builder.Services.AddResponseCaching();
@@ -25,9 +37,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("admin"));
 });
 
-string connectionString = builder.Configuration.GetConnectionString("DeliveryDBAzure");
-builder.Services.AddTransient<RepositoryDelivery>();
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddTransient<HelperCallApi>();
+builder.Services.AddTransient<ServiceApiDelivery>();
 
 builder.Services.AddAuthentication(options =>
 {
