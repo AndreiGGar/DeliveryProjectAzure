@@ -2,7 +2,9 @@
     List<CategoryProduct> categoriesByRestaurant = ViewData["CATEGORIES"] as List<CategoryProduct>;
     List<Product> products = ViewData["PRODUCTS"] as List<Product>;
     Restaurant restaurant = ViewData["RESTAURANT"] as Restaurant;
-    List<int> cart = Context.Session.GetObject<List<int>>("CART");
+    var cartService = ViewData["SERVICECART"] as ServiceCart;
+    string cacheKey = $"cart_{User.Identity.Name}";
+    List<int> cart = await cartService.GetCartAsync(cacheKey);
 }
 
 <div class="container-fluid">

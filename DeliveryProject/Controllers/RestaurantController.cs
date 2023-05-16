@@ -5,16 +5,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using DeliveryProjectAzure.Services;
+using Newtonsoft.Json;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace DeliveryProjectAzure.Controllers
 {
     public class RestaurantController : Controller
     {
         private ServiceApiDelivery service;
+        private ServiceCart serviceCart;
 
-        public RestaurantController(ServiceApiDelivery service)
+        public RestaurantController(ServiceApiDelivery service, ServiceCart serviceCart)
         {
             this.service = service;
+            this.serviceCart = serviceCart;
         }
 
         public async Task<IActionResult> Index(int id)
@@ -25,10 +30,10 @@ namespace DeliveryProjectAzure.Controllers
             ViewData["PRODUCTS"] = products;
             Restaurant restaurant = await this.service.GetRestaurantByIdAsync(id);
             ViewData["RESTAURANT"] = restaurant;
+            ViewData["SERVICECART"] = serviceCart;
             return View();
         }
 
-        
         public async Task<IActionResult> Search()
         {
             return View();
@@ -37,12 +42,12 @@ namespace DeliveryProjectAzure.Controllers
         [HttpPost]
         public async Task<IActionResult> Search(string search)
         {
-            if (search == null || search == "" || search == " ")
+            if (string.IsNullOrEmpty(search) || search.Trim() == "")
             {
                 List<Restaurant> restaurants = await this.service.GetRestaurantsAsync();
                 return View(restaurants);
-
-            } else
+            }
+            else
             {
                 List<Restaurant> restaurants = await this.service.GetRestaurantBySearchAsync(search);
                 return View(restaurants);
@@ -53,26 +58,29 @@ namespace DeliveryProjectAzure.Controllers
         {
             if (idproduct != null)
             {
-                List<int> cart;
+                string cacheKey = $"cart_{User.Identity.Name}";
+                List<int> cart = await this.serviceCart.GetCartAsync(cacheKey);
 
-                if (HttpContext.Session.GetObject<List<int>>("CART") == null)
+                if (cart == null)
                 {
                     cart = new List<int>();
                 }
-                else
-                {
-                    cart = HttpContext.Session.GetObject<List<int>>("CART");
-                }
+
                 cart.Add(idproduct.Value);
-                HttpContext.Session.SetObject("CART", cart);
+
+                // Store the cart in the cache
+                await this.serviceCart.SetCartAsync(cacheKey, cart);
             }
+
             string previousUrl = Request.Headers["Referer"].ToString();
             return Redirect(previousUrl);
         }
 
         public async Task<IActionResult> Cart(int? idproduct)
         {
-            List<int> cart = HttpContext.Session.GetObject<List<int>>("CART");
+            string cacheKey = $"cart_{User.Identity.Name}";
+            List<int> cart = await this.serviceCart.GetCartAsync(cacheKey);
+
             if (cart == null)
             {
                 ViewData["MESSAGE"] = "Actualmente no tienes ningún producto en el carrito";
@@ -86,14 +94,15 @@ namespace DeliveryProjectAzure.Controllers
 
                     if (cart.Count == 0)
                     {
-                        HttpContext.Session.Remove("CART");
+                        // Remove the cart from the cache
+                        await this.serviceCart.RemoveCartAsync(cacheKey);
                         ViewData["MESSAGE"] = "Actualmente no tienes ningún producto en el carrito";
                     }
                     else
                     {
-                        HttpContext.Session.SetObject("CART", cart);
+                        // Update the cart in the cache
+                        await this.serviceCart.SetCartAsync(cacheKey, cart);
                     }
-
                 }
 
                 ViewData["RESTAURANTS"] = await this.service.GetRestaurantsAsync();
@@ -112,7 +121,8 @@ namespace DeliveryProjectAzure.Controllers
         [HttpPost]
         public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod)
         {
-            List<int> cart = HttpContext.Session.GetObject<List<int>>("CART");
+            string cacheKey = $"cart_{User.Identity.Name}";
+            List<int> cart = await this.serviceCart.GetCartAsync(cacheKey);
             List<Product> products = await this.service.GetProductsCartAsync(cart);
 
             // Create a new purchase object
@@ -149,8 +159,8 @@ namespace DeliveryProjectAzure.Controllers
             productsCart = productsCart.TrimEnd(',');
             purchase.Products = productsCart;
             await this.service.InsertPurchaseAsync(HttpContext.Session.GetString("token"), purchase.UserId, purchase.RestaurantId, purchase.TotalPrice, purchase.Status, purchase.Delivery, formattedRequestDate, purchase.DeliveryAddress, purchase.DeliveryMethod, purchase.Code, productsCart, purchase.PaymentMethod);
-            // Remove cart from session and redirect to success page
-            HttpContext.Session.Remove("CART");
+            // Remove cart from cache and redirect to success page
+            await this.serviceCart.RemoveCartAsync(cacheKey);
             return RedirectToAction("Success");
         }
 
