@@ -1,19 +1,20 @@
-﻿@*@{
+﻿@{
     int qtyCart = 0;
+    var cacheKey = Model as string;
 
-    var httpContext = Context.Request.HttpContext;
-    var cacheKey = $"cart_{httpContext.User.Identity.Name}";
-
-    var serviceCart = Context.RequestServices.GetService<ServiceCart>();
-    var cart = await serviceCart.GetCartAsync(cacheKey, httpContext);
-
-    if (cart != null)
+    if (!string.IsNullOrEmpty(cacheKey))
     {
-        qtyCart = cart.Count();
-    }
-}*@
+        var serviceCart = Context.RequestServices.GetService<ServiceCart>();
+        var cart = await serviceCart.GetCartAsync(cacheKey);
 
-@*@if (Context.Session.GetString("CART") != null)
+        if (cart != null)
+        {
+            qtyCart = cart.Count;
+        }
+    }
+}
+
+@if (qtyCart > 0)
 {
     <li class="nav-item me-3">
         <a class="nav-link" asp-controller="Restaurant" asp-action="Cart" style="display: flex; align-items: center;">
@@ -25,13 +26,13 @@
     </li>
 }
 else
-{*@
+{
     <li class="nav-item me-3">
         <a class="nav-link" asp-controller="Restaurant" asp-action="Cart" style="display: flex; align-items: center;">
-            @*<span class="badge text-bg-light text-black me-1">
+            <span class="badge text-bg-light text-black me-1">
                 0
-            </span>*@
+            </span>
             <i class="fa-solid fa-cart-shopping fa-lg" style="color: white"></i>
         </a>
     </li>
-@*}*@
+}

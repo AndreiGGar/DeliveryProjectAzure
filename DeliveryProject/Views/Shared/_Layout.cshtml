@@ -47,7 +47,9 @@
                                 <i class="fa-solid fa-heart fa-lg" style="color: red"></i>
                             </a>
                         </li>
-                        <partial name="_MenuCart" />
+                        @{
+                            await Html.RenderPartialAsync("_MenuCart", "cart_" + Context.User.Identity.Name);
+                        }
                         <partial name="_MenuLogin" />
                     </ul>
                 </div>
