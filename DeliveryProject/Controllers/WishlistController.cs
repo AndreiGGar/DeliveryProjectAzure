@@ -28,7 +28,6 @@ namespace DeliveryProjectAzure.Controllers
             DateTime now = DateTime.UtcNow;
             string time = now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            // Check if the restaurant is already in the user's wishlist
             bool restaurantExists = await this.service.RestaurantExistsInWishlist(HttpContext.Session.GetString("token"), idrestaurant);
 
             if (restaurantExists)

@@ -8,6 +8,11 @@ using DeliveryProjectAzure.Services;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights;
+using System.Configuration;
+using Microsoft.ApplicationInsights.DataContracts;
 
 namespace DeliveryProjectAzure.Controllers
 {
@@ -15,11 +20,13 @@ namespace DeliveryProjectAzure.Controllers
     {
         private ServiceApiDelivery service;
         private ServiceCart serviceCart;
+        private TelemetryClient telemetryClient;
 
-        public RestaurantController(ServiceApiDelivery service, ServiceCart serviceCart)
+        public RestaurantController(ServiceApiDelivery service, ServiceCart serviceCart, TelemetryClient telemetryClient)
         {
             this.service = service;
             this.serviceCart = serviceCart;
+            this.telemetryClient = telemetryClient;
         }
 
         public async Task<IActionResult> Index(int id)
@@ -68,7 +75,6 @@ namespace DeliveryProjectAzure.Controllers
 
                 cart.Add(idproduct.Value);
 
-                // Store the cart in the cache
                 await this.serviceCart.SetCartAsync(cacheKey, cart);
             }
 
@@ -94,13 +100,11 @@ namespace DeliveryProjectAzure.Controllers
 
                     if (cart.Count == 0)
                     {
-                        // Remove the cart from the cache
                         await this.serviceCart.RemoveCartAsync(cacheKey);
                         ViewData["MESSAGE"] = "Actualmente no tienes ningún producto en el carrito";
                     }
                     else
                     {
-                        // Update the cart in the cache
                         await this.serviceCart.SetCartAsync(cacheKey, cart);
                     }
                 }
@@ -119,13 +123,12 @@ namespace DeliveryProjectAzure.Controllers
 
         [AuthorizeUsers(Policy = "USER")]
         [HttpPost]
-        public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod)
+        public async Task<IActionResult> Checkout(int restaurantid, string totalPrice, string deliveryMethod, string deliveryAddress, string paymentMethod, [FromServices] IConfiguration configuration)
         {
             string cacheKey = $"cart_{User.Identity.Name}";
             List<int> cart = await this.serviceCart.GetCartAsync(cacheKey);
             List<Product> products = await this.service.GetProductsCartAsync(cart);
 
-            // Create a new purchase object
             Purchase purchase = new Purchase();
             purchase.UserId = int.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             purchase.RestaurantId = restaurantid;
@@ -159,7 +162,34 @@ namespace DeliveryProjectAzure.Controllers
             productsCart = productsCart.TrimEnd(',');
             purchase.Products = productsCart;
             await this.service.InsertPurchaseAsync(HttpContext.Session.GetString("token"), purchase.UserId, purchase.RestaurantId, purchase.TotalPrice, purchase.Status, purchase.Delivery, formattedRequestDate, purchase.DeliveryAddress, purchase.DeliveryMethod, purchase.Code, productsCart, purchase.PaymentMethod);
-            // Remove cart from cache and redirect to success page
+            
+            this.telemetryClient.TrackEvent("DeliveryProjectPurchasesLogs");
+            MetricTelemetry metric = new MetricTelemetry();
+            metric.Name = "Purchases";
+            metric.Sum = double.Parse(totalPrice);
+            this.telemetryClient.TrackMetric(metric);
+            string message = "";
+            SeverityLevel level;
+            if (metric.Sum <= 10)
+            {
+                level = SeverityLevel.Error;
+            }
+            else if (metric.Sum <= 15)
+            {
+                level = SeverityLevel.Critical;
+            }
+            else if (metric.Sum <= 20)
+            {
+                level = SeverityLevel.Warning;
+            }
+            else
+            {
+                level = SeverityLevel.Information;
+            }
+            message = purchase.UserId + " " + metric.Sum + "€";
+            TraceTelemetry trace = new TraceTelemetry(message, level);
+            this.telemetryClient.TrackTrace(trace);
+
             await this.serviceCart.RemoveCartAsync(cacheKey);
             return RedirectToAction("Success");
         }

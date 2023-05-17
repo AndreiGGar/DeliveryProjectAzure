@@ -20,6 +20,7 @@ KeyVaultSecret keyVaultSecretCacheRedis = await secretClient.GetSecretAsync("Del
 string azureKeys = keyVaultSecret.Value;
 string azureKeyCacheRedis = keyVaultSecretCacheRedis.Value;
 /*string redisCacheConnectionString = builder.Configuration.GetSection("RedisCache:ConnectionString").Value;*/
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:ConnectionString"]);
 builder.Services.AddResponseCaching();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -56,6 +57,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllersWithViews(options => options.EnableEndpointRouting = false)
     .AddSessionStateTempDataProvider();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
