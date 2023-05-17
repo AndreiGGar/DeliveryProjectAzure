@@ -16,11 +16,13 @@ builder.Services.AddAzureClients(factory =>
 SecretClient secretClient = builder.Services.BuildServiceProvider().GetService<SecretClient>();
 KeyVaultSecret keyVaultSecret = await secretClient.GetSecretAsync("DeliveryApi");
 KeyVaultSecret keyVaultSecretCacheRedis = await secretClient.GetSecretAsync("DeliveryProjectCacheRedis");
+KeyVaultSecret keyVaultSecretInsights = await secretClient.GetSecretAsync("DeliveryProjectInsights");
 
 string azureKeys = keyVaultSecret.Value;
 string azureKeyCacheRedis = keyVaultSecretCacheRedis.Value;
+string azureKeyInsights = keyVaultSecretInsights.Value;
 /*string redisCacheConnectionString = builder.Configuration.GetSection("RedisCache:ConnectionString").Value;*/
-builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:ConnectionString"]);
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration[azureKeyInsights]);
 builder.Services.AddResponseCaching();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
